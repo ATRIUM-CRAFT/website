@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>ATRIUM CRAFT maker of Trench Odyssey</title>
+  <meta name="description" content="ATRIUM CRAFT is an independent game studio. Our game, Trench Odyssey, is a pixel-art descent into an ocean trench that gets darker, colder and deadlier with every metre.">
+  <meta property="og:title" content="ATRIUM CRAFT — Trench Odyssey">
+  <meta property="og:description" content="A pixel-art descent into an ocean trench that gets darker with every metre.">
+  <meta property="og:image" content="poster.jpg">
+  <link rel="icon" href="logo.png">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;600&family=Press+Start+2P&display=swap" rel="stylesheet">
+
+  <style>
+    /* The game's own depth palette: from the surface to the Hadal floor */
+    :root {
+      --hadal: #070A10;
+      --midnight: #1A2130;
+      --twilight: #8FA8BF;
+      --visor: #7FD4E8;
+      --glow: #C4F0FA;
+      --lamp: #E8A24B;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; }
+    html, body { height: 100%; }
+
+    body {
+      background: var(--hadal);
+      color: var(--glow);
+      font-family: "Barlow", system-ui, sans-serif;
+      overflow-x: hidden;
+    }
+
+    /* ---------- the video, behind everything ---------- */
+    .stage {
+      position: fixed;
+      inset: 0;
+      z-index: 0;
+    }
+    .stage video {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+    /* The light bleeds away toward the bottom of the screen,
+       like it does as you dive. It darkens once, on load. */
+    .stage::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background:
+        linear-gradient(to bottom,
+          rgba(7, 10, 16, 0.35) 0%,
+          rgba(7, 10, 16, 0) 22%,
+          rgba(26, 33, 48, 0.45) 55%,
+          rgba(7, 10, 16, 0.92) 85%,
+          var(--hadal) 100%);
+      animation: descend 2.4s ease-out both;
+    }
+    @keyframes descend {
+      from { opacity: 0.3; }
+      to   { opacity: 1; }
+    }
+
+    /* ---------- the page over it ---------- */
+    .page {
+      position: relative;
+      z-index: 1;
+      min-height: 100vh;
+      min-height: 100svh;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      padding: clamp(20px, 4vw, 48px);
+    }
+
+    .studio {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+    .studio img {
+      height: 44px;
+      width: auto;
+      image-rendering: pixelated;   /* keeps a pixel-art logo crisp */
+    }
+    .studio span {
+      font-weight: 600;
+      font-size: 18px;
+      letter-spacing: 0.02em;
+    }
+
+    .bottom {
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      gap: 32px;
+      flex-wrap: wrap;
+    }
+
+    .intro {
+      max-width: 52ch;
+      animation: surface 1.2s ease-out 0.9s both;
+    }
+    @keyframes surface {
+      from { opacity: 0; }
+      to   { opacity: 1; }
+    }
+
+    .intro h1 {
+      font-family: "Press Start 2P", monospace;
+      font-weight: 400;
+      font-size: clamp(26px, 5.2vw, 64px);
+      line-height: 1.25;
+      color: #fff;
+      text-shadow: 4px 4px 0 var(--hadal), 0 0 32px rgba(127, 212, 232, 0.35);
+      margin-bottom: 24px;
+    }
+
+    .intro p {
+      font-size: clamp(17px, 1.6vw, 21px);
+      line-height: 1.55;
+      color: var(--glow);
+    }
+    .intro p + p {
+      margin-top: 14px;
+      font-size: 16px;
+      color: var(--twilight);
+    }
+
+    /* ---------- sound / play button ---------- */
+    .sound {
+      font: 600 15px/1 "Barlow", system-ui, sans-serif;
+      color: var(--glow);
+      background: rgba(7, 10, 16, 0.6);
+      border: 2px solid var(--twilight);
+      padding: 12px 18px;
+      cursor: pointer;
+      transition: border-color 0.2s, color 0.2s;
+    }
+    .sound:hover { border-color: var(--visor); color: #fff; }
+    .sound:focus-visible {
+      outline: 2px solid var(--lamp);
+      outline-offset: 3px;
+    }
+
+    @media (max-width: 600px) {
+      .studio img { height: 36px; }
+      .intro h1 { margin-bottom: 18px; }
+    }
+
+    /* No moving picture or fades for people who asked for less motion */
+    @media (prefers-reduced-motion: reduce) {
+      .stage::after, .intro { animation: none; }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="stage" aria-hidden="true">
+    <video id="trailer" autoplay muted loop playsinline preload="auto" poster="poster.jpg">
+      <source src="gameplay.mp4" type="video/mp4">
+    </video>
+  </div>
+
+  <div class="page">
+    <header class="studio">
+      <img src="logo.png" alt="ATRIUM CRAFT logo">
+      <span>ATRIUM CRAFT</span>
+    </header>
+
+    <div class="bottom">
+      <main class="intro">
+        <h1>Trench Odyssey</h1>
+        <p>
+          A pixel-art descent into an ocean trench that gets darker, colder and
+          deadlier with every metre. Mine the walls, rebuild your suit, and dive
+          deeper than any crew before you.
+        </p>
+        <p>
+          ATRIUM CRAFT is an independent game studio. Trench Odyssey is our first game.
+        </p>
+      </main>
+
+    
+    </div>
+  </div>
+
+  <script>
+    const video = document.getElementById("trailer");
+    video.muted = true;   // always silent
+
+    // People who asked their system for less motion see the still poster.
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+      video.pause();
+      video.removeAttribute("autoplay");
+    }
+  </script>
+</body>
+</html>
